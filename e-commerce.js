@@ -99,16 +99,16 @@ async function handleProduct(item) {
   console.log(`Great choice! Your selection is Available. Ready to make it yours?
     ${item[0]} for price-${item[1]}\n`);
   let qty = await prompt("Enter quantity: ");
-  console.log(`\n0- checkout item only\n1- Add item to cart`);
+  console.log(`\n0- checkout items only\n1- Add item to cart`);
   let ping = await prompt(`Enter: \t`);
 
   if (ping == "1") {
     // cart.push(item);
     cart.push([item[0], qty, qty * Number(item[1].replace("$", ""))]); // [ [ 'Smart Tv', '4', 6000 ] ]
+    cartDisplay(cart);
   } else {
-    // cart.push([item[0], qty, qty * Number(item[1].replace("$", ""))]);
-
-    return;
+    cart.push([item[0], qty, qty * Number(item[1].replace("$", ""))]);
+    checkout(cart);
   }
 }
 
@@ -129,7 +129,18 @@ async function start() {
     `);
 
     let ping = await prompt(`Enter: \t`);
-    console.log(ping);
+    switch (ping){
+      case "0":
+        shippingAddress();
+        break;
+      case "1":
+        categories();
+        break;
+      case "2":
+        return;
+      default:
+        console.log("Option not found");
+    }
   } catch (error) {
     console.error("Error:", error);
   }
@@ -183,7 +194,7 @@ async function categories() {
 }
 
 const cartDisplay = async function (cart = cart) {
-  console.log(`~~~~|INDIGO STORE| CATEGORIES`);
+  console.log(`~~~~|INDIGO STORE| CART`);
   console.log(
     `Discover more must-have items to elevate your collection and enjoy exclusive deals!!  \n`
   );
@@ -268,22 +279,26 @@ const confirmation = function () {
 };
 
 async function payment() {
-  console.log(`~~~~|INDIGO STORE| PAYMENT`);
-  let rand = Math.random() * 9023;
-  console.log(`Generate Indigo Merchant Paycode- ${rand}
+  try {
+    console.log(`~~~~|INDIGO STORE| PAYMENT`);
+    let rand = Math.random() * 9023;
+    console.log(`Generate Indigo Merchant Paycode- ${rand}
   This is a unique paycode linked to your money acc
   Entering means you will be debited,
   Cancel to stop Process
   0- to cancel`);
-  let ping = await prompt(`Enter: \t`);
+    let ping = await prompt(`Enter: \t`);
 
-  if (ping == String(rand)) {
-    order.code = String(rand);
-    confirmation();
-  } else if (ping == "0") {
-    // End loop;
-  } else {
-    console.log("Error: Failed to input paycode, process canceled");
+    if (ping == String(rand)) {
+      order.code = String(rand);
+      confirmation();
+    } else if (ping == "0") {
+      // End loop;
+    } else {
+      console.log("Error: Failed to input paycode, process canceled");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
   }
 }
 
@@ -295,3 +310,6 @@ async function payment() {
 // checkout(cart)
 // confirmation();
 // payment()
+// start()
+
+start();
