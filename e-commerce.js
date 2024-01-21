@@ -129,7 +129,7 @@ async function start() {
     `);
 
     let ping = await prompt(`Enter: \t`);
-    switch (ping){
+    switch (ping) {
       case "0":
         shippingAddress();
         break;
@@ -146,6 +146,8 @@ async function start() {
   }
 }
 
+//TODO ... CONTINUE HERE
+
 async function shippingAddress() {
   try {
     console.log(`~~~~~|INDIGO STORE| SHIPPING...`);
@@ -158,6 +160,22 @@ async function shippingAddress() {
     \n0- Proceed to Categories\n1- Cancel Application\n2- Continue `);
 
     let ping = await prompt("Enter: \t"); // handle Progress.
+    switch (ping) {
+      case "0":
+        categories();
+        break;
+      case "1":
+        return;
+      case "2":
+        if(cart.length){
+          payment();
+        }else{
+          categories();
+        }
+        break;
+      default:
+        console.log("Option not found");
+    }
   } catch (error) {
     console.error("Error:", error);
   }
@@ -242,8 +260,7 @@ const checkout = async function (cart = cart) {
       if (!order.shippingAddress) {
         shippingAddress();
       } else {
-        console.log("pay");
-        // payment page.
+        payment();
       }
       break;
     case "1":
@@ -282,7 +299,7 @@ async function payment() {
   try {
     console.log(`~~~~|INDIGO STORE| PAYMENT`);
     let rand = Math.random() * 9023;
-    console.log(`Generate Indigo Merchant Paycode- ${rand}
+    console.log(`Generated Indigo Merchant Paycode- ${rand}
   This is a unique paycode linked to your money acc
   Entering means you will be debited,
   Cancel to stop Process
